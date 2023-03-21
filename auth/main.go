@@ -16,12 +16,12 @@ func welcome(c *fiber.Ctx) error {
 func setupModules(app *fiber.App) {
 	app.Get("/", welcome)
 
-	app.Post("/user/register", modules.UserRegister)
-	app.Post("/user/login", modules.UserLogin)
-	app.Get("/user/logout", middleware.Authentication, middleware.Activity, modules.UserLogout)
-	app.Get("/user/refresh", middleware.RefreshToken, middleware.Activity, modules.UserRefresh)
+	app.Post("/register", modules.UserRegister)
+	app.Post("/login", modules.UserLogin)
+	app.Get("/logout", middleware.Authentication, middleware.Activity, modules.UserLogout)
+	app.Get("/refresh", middleware.RefreshToken, middleware.Activity, modules.UserRefresh)
 
-	app.Get("/user/verify", middleware.Authentication, welcome)
+	app.Post("/verify", middleware.Authentication, modules.UserVerify)
 }
 
 func main() {

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/dodysat/gue-product/database"
+	"github.com/dodysat/gue-product/middleware"
 	"github.com/dodysat/gue-product/modules"
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,12 +16,12 @@ func welcome(c *fiber.Ctx) error {
 func setupModules(app *fiber.App) {
 	app.Get("/", welcome)
 
-	app.Post("/product", modules.CreateProduct)
-	app.Get("/product", modules.GetProducts)
-	app.Get("/product/:id", modules.GetProduct)
-	app.Put("/product/:id", modules.UpdateProduct)
-	app.Delete("/product/:id", modules.DeleteProduct)
-	app.Put("/product/:id/modifystock", modules.ModifyStock)
+	app.Get("/product", middleware.Auth, modules.GetProducts)
+	app.Post("/product", middleware.Auth, modules.CreateProduct)
+	app.Get("/product/:id", middleware.Auth, modules.GetProduct)
+	app.Put("/product/:id", middleware.Auth, modules.UpdateProduct)
+	app.Delete("/product/:id", middleware.Auth, modules.DeleteProduct)
+	app.Put("/product/:id/modifystock", middleware.Auth, modules.ModifyStock)
 }
 
 func main() {

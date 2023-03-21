@@ -30,8 +30,6 @@ func Activity(c *fiber.Ctx) error {
 		Service:   "auth",
 		Path:      c.Path(),
 		Method:    c.Method(),
-		Body:      c.Body(),
-		Query:     c.Query("query"),
 		Timestamp: time.Now(),
 	})
 

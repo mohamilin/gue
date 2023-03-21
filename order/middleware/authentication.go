@@ -16,12 +16,12 @@ type Body struct {
 }
 
 func Auth(c *fiber.Ctx) error {
-	urlAuth := "http://auth:3001/verify"
+	urlAuth := "http://localhost:3001/verify"
 
 	token := c.Get("Authorization")
 
 	body := &Body{
-		Service: "product",
+		Service: "order",
 		Path:    c.Path(),
 		Method:  c.Method(),
 		Body:    c.Body(),
@@ -44,7 +44,6 @@ func Auth(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"message": "Internal Server Error"})
 	}
-
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {

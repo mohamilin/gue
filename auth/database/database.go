@@ -1,12 +1,13 @@
 package database
 
 import (
-	"gorm.io/gorm"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm/logger"
 	"log"
-	"github.com/dodysat/gue-auth/models"
 	"os"
+
+	"github.com/dodysat/gue-auth/models"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type DbInstance struct {
@@ -15,9 +16,9 @@ type DbInstance struct {
 
 var Database DbInstance
 
-func ConnectDb(){
-	// db, err := gorm.Open(mysql.Open("root:@tcp(auth-database:3306)/auth?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
-	db, err := gorm.Open(mysql.Open("root:@tcp(localhost:3435)/auth?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
+func ConnectDb() {
+	db, err := gorm.Open(mysql.Open("root:@tcp(auth-database:3306)/auth?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
+	// db, err := gorm.Open(mysql.Open("root:@tcp(localhost:3435)/auth?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error connecting to database\n", err.Error())
 		os.Exit(2)
