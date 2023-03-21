@@ -1,0 +1,55 @@
+version: "3.7"
+services:
+  product-database:
+    image: mysql:8.0
+    ports:
+      - 3434:3306
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: product
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+    networks:
+      - gue
+
+  auth-database:
+    image: mysql:8.0
+    ports:
+      - 3435:3306
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: auth
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+    networks:
+      - gue
+
+  # product:
+  #   image: product
+  #   build: ./product
+  #   depends_on:
+  #     product-database:
+  #       condition: service_healthy
+  #   networks:
+  #     - gue
+
+  # api-gateway:
+  #   image: nginx:alpine
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - product
+
+  #   volumes:
+  #     - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
+  #   networks:
+  #     - gue
+
+networks:
+  gue:
