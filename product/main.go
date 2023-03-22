@@ -18,12 +18,12 @@ func setupModules(app *fiber.App) {
 	app.Get("/", welcome)
 
 	product := app.Group("/product", middleware.Auth)
-	product.Get("/", middleware.Auth, modules.GetProducts)
-	product.Post("/", middleware.Auth, modules.CreateProduct)
-	product.Get("/:id", middleware.Auth, modules.GetProduct)
-	product.Put("/:id", middleware.Auth, modules.UpdateProduct)
-	product.Delete("/:id", middleware.Auth, modules.DeleteProduct)
-	product.Put("/:id/modifystock", middleware.Auth, modules.ModifyStock)
+	product.Get("/", modules.GetProducts)
+	product.Post("/", modules.CreateProduct)
+	product.Get("/:id", modules.GetProduct)
+	product.Put("/:id", modules.UpdateProduct)
+	product.Delete("/:id", modules.DeleteProduct)
+	product.Put("/:id/modifystock", modules.ModifyStock)
 }
 
 func main() {
