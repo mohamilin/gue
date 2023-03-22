@@ -67,16 +67,16 @@ services:
     ports:
       - 3001:3001 #uncomment this line if you want to access the auth service from host machine (PORT 3001 will be available on your host machine)
 
-  # order:
-  #   image: order
-  #   build: ./order
-  #   depends_on:
-  #     order-database:
-  #       condition: service_healthy
-  #   networks:
-  #     - gue
-  #   ports:
-  #     - 3003:3003 #uncomment this line if you want to access the auth service from host machine (PORT 3003 will be available on your host machine)
+  order:
+    image: order
+    build: ./order
+    depends_on:
+      order-database:
+        condition: service_healthy
+    networks:
+      - gue
+    ports:
+      - 3003:3003 #uncomment this line if you want to access the auth service from host machine (PORT 3003 will be available on your host machine)
 
   api-gateway:
     image: nginx:alpine
