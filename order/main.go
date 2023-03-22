@@ -17,16 +17,18 @@ func welcome(c *fiber.Ctx) error {
 func setupModules(app *fiber.App) {
 	app.Get("/", welcome)
 
-	app.Get("/cart", middleware.Auth, modules.GetCarts)
-	app.Get("/cart/:id", middleware.Auth, modules.GetCart)
-	app.Post("/cart", middleware.Auth, modules.CreateCart)
-	app.Put("/cart/:id", middleware.Auth, modules.UpdateCart)
-	app.Delete("/cart/:id", middleware.Auth, modules.DeleteCart)
+	cart := app.Group("/cart", middleware.Auth)
+	cart.Get("/", modules.GetCarts)
+	cart.Get("/:id", modules.GetCart)
+	cart.Post("/", modules.CreateCart)
+	cart.Put("/:id", modules.UpdateCart)
+	cart.Delete("/:id", modules.DeleteCart)
 
-	app.Get("/checkout", middleware.Auth, modules.GetCheckouts)
-	app.Get("/checkout/:id", middleware.Auth, modules.GetCheckout)
-	app.Post("/checkout", middleware.Auth, modules.CreateCheckout)
-	app.Delete("/checkout/:id", middleware.Auth, modules.DeleteCheckout)
+	checkout := app.Group("/checkout", middleware.Auth)
+	checkout.Get("/", modules.GetCheckouts)
+	checkout.Get("/:id", modules.GetCheckout)
+	checkout.Post("/", modules.CreateCheckout)
+	checkout.Delete("/:id", modules.DeleteCheckout)
 }
 
 func main() {
