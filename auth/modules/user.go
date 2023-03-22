@@ -2,6 +2,7 @@ package modules
 
 import (
 	"encoding/json"
+	"os"
 	"strings"
 	"time"
 
@@ -77,15 +78,16 @@ func UserLogin(c *fiber.Ctx) error {
 		accessTokenExpires := time.Now().Add(time.Minute * 15).Unix()
 		refreshTokenExpires := time.Now().Add(time.Hour * 24 * 7).Unix()
 
+		secret := os.Getenv("JWT_SECRET")
 		accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"userId": userId, "exp": accessTokenExpires})
-		accessTokenString, err := accessToken.SignedString([]byte("secret"))
+		accessTokenString, err := accessToken.SignedString([]byte(secret))
 
 		if err != nil {
 			return c.Status(400).JSON(fiber.Map{"message": "Error creating access token"})
 		}
 
 		refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"userId": userId, "exp": refreshTokenExpires})
-		refreshTokenString, err := refreshToken.SignedString([]byte("secret"))
+		refreshTokenString, err := refreshToken.SignedString([]byte(secret))
 
 		if err != nil {
 			return c.Status(400).JSON(fiber.Map{"message": "Error creating refresh token"})
@@ -150,14 +152,15 @@ func UserRefresh(c *fiber.Ctx) error {
 	accessTokenExpires := time.Now().Add(time.Minute * 15).Unix()
 	refreshTokenExpires := time.Now().Add(time.Hour * 24 * 7).Unix()
 
+	secret := os.Getenv("JWT_SECRET")
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"userId": userId, "exp": accessTokenExpires})
-	accessTokenString, err := accessToken.SignedString([]byte("secret"))
+	accessTokenString, err := accessToken.SignedString([]byte(secret))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": "Error creating access token"})
 	}
 
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"userId": userId, "exp": refreshTokenExpires})
-	refreshTokenString, err := refreshToken.SignedString([]byte("secret"))
+	refreshTokenString, err := refreshToken.SignedString([]byte(secret))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": "Error creating refresh token"})
 	}
@@ -179,7 +182,7 @@ func UserVerify(c *fiber.Ctx) error {
 	header := c.Get("Authorization")
 
 	token := strings.Split(header, " ")[1]
-	secret := "secret"
+	secret := os.Getenv("JWT_SECRET")
 	decoded, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) { return []byte(secret), nil })
 	if err != nil {
 		return c.Status(401).JSON(fiber.Map{"message": "Invalid Token"})

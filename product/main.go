@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/dodysat/gue-product/database"
 	"github.com/dodysat/gue-product/middleware"
@@ -29,5 +30,7 @@ func main() {
 	app := fiber.New()
 	setupModules(app)
 
-	log.Fatal(app.Listen(":3002"))
+	port := os.Getenv("PORT")
+
+	log.Fatal(app.Listen(":" + port))
 }

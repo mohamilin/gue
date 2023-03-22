@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,7 +17,8 @@ type Body struct {
 }
 
 func Auth(c *fiber.Ctx) error {
-	urlAuth := "http://auth:3001/verify"
+	svcAuth := os.Getenv("SVC_AUTH")
+	urlAuth := svcAuth + "/verify"
 
 	token := c.Get("Authorization")
 

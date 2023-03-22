@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"os"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -23,7 +24,7 @@ func Authentication(c *fiber.Ctx) error {
 		return c.Status(401).JSON(fiber.Map{"message": "Missing Token"})
 	}
 
-	secret := "secret"
+	secret := os.Getenv("JWT_SECRET")
 	_, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) { return []byte(secret), nil })
 	if err != nil {
 		return c.Status(401).JSON(fiber.Map{"message": "Invalid Token"})
@@ -49,7 +50,7 @@ func RefreshToken(c *fiber.Ctx) error {
 		return c.Status(401).JSON(fiber.Map{"message": "Missing Token"})
 	}
 
-	secret := "secret"
+	secret := os.Getenv("JWT_SECRET")
 	_, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) { return []byte(secret), nil })
 	if err != nil {
 		return c.Status(401).JSON(fiber.Map{"message": "Invalid Token"})

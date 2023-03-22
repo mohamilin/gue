@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"os"
 	"strings"
 	"time"
 
@@ -16,7 +17,7 @@ func Activity(c *fiber.Ctx) error {
 	header := c.Get("Authorization")
 
 	token := strings.Split(header, " ")[1]
-	secret := "secret"
+	secret := os.Getenv("JWT_SECRET")
 	decoded, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) { return []byte(secret), nil })
 	if err != nil {
 		return c.Status(401).JSON(fiber.Map{"message": "Invalid Token"})

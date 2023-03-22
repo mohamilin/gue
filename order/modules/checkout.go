@@ -3,6 +3,7 @@ package modules
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/dodysat/gue-order/database"
 	"github.com/dodysat/gue-order/models"
@@ -84,7 +85,10 @@ func CreateCheckout(c *fiber.Ctx) error {
 
 	productId := cart.ProductID
 	amount := -int(cart.Amount)
-	urlProductService := fmt.Sprintf("http://product:3002/product/%d/modifystock?amount=%d", productId, amount)
+
+	svcProduct := os.Getenv("SVC_PRODUCT")
+	urlProductService := fmt.Sprintf("%s/product/%d/modifystock?amount=%d", svcProduct, productId, amount)
+
 	token := c.Get("Authorization")
 
 	req, err := http.NewRequest("PUT", urlProductService, nil)
@@ -124,7 +128,9 @@ func DeleteCheckout(c *fiber.Ctx) error {
 
 	productId := checkout.ProductID
 	amount := int(checkout.Amount)
-	urlProductService := fmt.Sprintf("http://product:3002/product/%d/modifystock?amount=%d", productId, amount)
+
+	svcProduct := os.Getenv("SVC_PRODUCT")
+	urlProductService := fmt.Sprintf("%s/product/%d/modifystock?amount=%d", svcProduct, productId, amount)
 	token := c.Get("Authorization")
 
 	req, err := http.NewRequest("PUT", urlProductService, nil)

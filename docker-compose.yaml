@@ -1,24 +1,9 @@
 version: "3.7"
 services:
-  product-database:
-    image: mysql:8.0
-    ports:
-      - 3434:3306 #uncomment this line if you want to access the database from host machine (PORT 3434 will be available on your host machine)
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
-      MYSQL_DATABASE: product
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 20s
-      timeout: 10s
-      retries: 5
-    networks:
-      - gue
-
   auth-database:
     image: mysql:8.0
-    ports:
-      - 3435:3306 #uncomment this line if you want to access the database from host machine (PORT 3435 will be available on your host machine)
+    # ports: #uncomment this line if you want to access the database from host machine
+    #   - 3435:3306 #uncomment this line if you want to access the database from host machine (PORT 3435 will be available on your host machine)
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: yes
       MYSQL_DATABASE: auth
@@ -30,10 +15,25 @@ services:
     networks:
       - gue
 
+  product-database:
+    image: mysql:8.0
+    # ports: #uncomment this line if you want to access the database from host machine
+    # - 3434:3306 #uncomment this line if you want to access the database from host machine (PORT 3434 will be available on your host machine)
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: product
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+    networks:
+      - gue
+
   order-database:
     image: mysql:8.0
-    ports:
-      - 3436:3306 #uncomment this line if you want to access the database from host machine (PORT 3436 will be available on your host machine)
+    # ports: #uncomment this line if you want to access the database from host machine
+    #   - 3436:3306 #uncomment this line if you want to access the database from host machine (PORT 3436 will be available on your host machine)
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: yes
       MYSQL_DATABASE: order
@@ -45,38 +45,62 @@ services:
     networks:
       - gue
 
-  product:
-    image: product
-    build: ./product
-    depends_on:
-      product-database:
-        condition: service_healthy
-    networks:
-      - gue
-    ports:
-      - 3002:3002 #uncomment this line if you want to access the product service from host machine (PORT 3002 will be available on your host machine)
+  # ---
 
   auth:
     image: auth
     build: ./auth
+    environment:
+      - DB_HOST=auth-database
+      - DB_USER=root
+      - DB_NAME=auth
+      - DB_PORT=3306
+      - JWT_SECRET=verysecret
+      - PORT=3001
     depends_on:
       auth-database:
         condition: service_healthy
     networks:
       - gue
-    ports:
-      - 3001:3001 #uncomment this line if you want to access the auth service from host machine (PORT 3001 will be available on your host machine)
+    # ports: #uncomment this line if you want to access the auth service from host machine
+    #   - 3001:3001 #uncomment this line if you want to access the auth service from host machine (PORT 3001 will be available on your host machine)
+
+  product:
+    image: product
+    build: ./product
+    environment:
+      - DB_HOST=product-database
+      - DB_USER=root
+      - DB_NAME=product
+      - DB_PORT=3306
+      - PORT=3002
+      - SVC_AUTH=http://auth:3001
+    depends_on:
+      product-database:
+        condition: service_healthy
+    networks:
+      - gue
+    # ports: #uncomment this line if you want to access the product service from host machine
+    #   - 3002:3002 #uncomment this line if you want to access the product service from host machine (PORT 3002 will be available on your host machine)
 
   order:
     image: order
     build: ./order
+    environment:
+      - DB_HOST=order-database
+      - DB_USER=root
+      - DB_NAME=order
+      - DB_PORT=3306
+      - PORT=3003
+      - SVC_AUTH=http://auth:3001
+      - SVC_PRODUCT=http://product:3002
     depends_on:
       order-database:
         condition: service_healthy
     networks:
       - gue
-    ports:
-      - 3003:3003 #uncomment this line if you want to access the auth service from host machine (PORT 3003 will be available on your host machine)
+    # ports: #uncomment this line if you want to access the auth service from host machine
+    #   - 3003:3003 #uncomment this line if you want to access the auth service from host machine (PORT 3003 will be available on your host machine)
 
   api-gateway:
     image: nginx:alpine
