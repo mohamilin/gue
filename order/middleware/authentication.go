@@ -16,7 +16,8 @@ type Body struct {
 }
 
 func Auth(c *fiber.Ctx) error {
-	urlAuth := "http://localhost:3001/verify"
+	// urlAuth := "http://localhost:3001/verify"
+	urlAuth := "http://auth:3001/verify"
 
 	token := c.Get("Authorization")
 

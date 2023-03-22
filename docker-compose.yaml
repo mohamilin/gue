@@ -81,7 +81,7 @@ services:
   api-gateway:
     image: nginx:alpine
     ports:
-      - 8878:80
+      - 8878:80 # Change 8878 to any port you want to access the gateway from host machine
     depends_on:
       - product
     volumes:

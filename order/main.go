@@ -21,6 +21,11 @@ func setupModules(app *fiber.App) {
 	app.Post("/cart", middleware.Auth, modules.CreateCart)
 	app.Put("/cart/:id", middleware.Auth, modules.UpdateCart)
 	app.Delete("/cart/:id", middleware.Auth, modules.DeleteCart)
+
+	app.Get("/checkout", middleware.Auth, modules.GetCheckouts)
+	app.Get("/checkout/:id", middleware.Auth, modules.GetCheckout)
+	app.Post("/checkout", middleware.Auth, modules.CreateCheckout)
+	app.Delete("/checkout/:id", middleware.Auth, modules.DeleteCheckout)
 }
 
 func main() {

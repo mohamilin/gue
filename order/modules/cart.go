@@ -54,7 +54,7 @@ func GetCarts(c *fiber.Ctx) error {
 	userId := c.Locals("userId")
 	database.Database.Db.Find(&cart, "user_id = ?", userId)
 	if len(cart) == 0 {
-		return c.Status(404).JSON(fiber.Map{"message": "No product found"})
+		return c.Status(404).JSON(fiber.Map{"message": "No Cart found"})
 	}
 
 	return c.Status(200).JSON(cart)
